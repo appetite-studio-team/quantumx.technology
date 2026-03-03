@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import FeaturePanels from "@/components/FeaturePanels";
 
@@ -111,23 +110,6 @@ export default function Home() {
               textAlign: "center",
             }}
           >
-            {/* Hero icon */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-              style={{ marginBottom: "28px" }}
-            >
-              <Image
-                src="/App-Icon-Black.png"
-                alt="QuantumX"
-                width={72}
-                height={72}
-                className="font-display"
-                style={{ filter: "invert(1)" }}
-              />
-            </motion.div>
-
             {/* Headline */}
             <motion.h1
               initial={{ opacity: 0, y: 24 }}
@@ -295,45 +277,6 @@ export default function Home() {
             zIndex: 0,
           }}
         />
-
-        {/* Mission hero image */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          style={{
-            position: "relative",
-            width: "100%",
-            maxWidth: "min(720px, 85vw)",
-            marginBottom: "48px",
-            zIndex: 1,
-          }}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            whileHover={{ scale: 1.02 }}
-            style={{
-              position: "relative",
-              width: "100%",
-              aspectRatio: "16/9",
-              borderRadius: "8px",
-              overflow: "hidden",
-              border: "1px solid rgba(255,255,255,0.08)",
-            }}
-          >
-            <Image
-              src="/quantumx-mission-hero.png"
-              alt="Quantum computing, post-quantum cybersecurity, and next-generation scientific systems"
-              fill
-              sizes="(max-width: 900px) 85vw, 720px"
-              style={{ objectFit: "cover" }}
-            />
-          </motion.div>
-        </motion.div>
 
         <motion.p
           initial={{ opacity: 0, y: 24 }}
