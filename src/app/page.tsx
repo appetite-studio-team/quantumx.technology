@@ -91,15 +91,6 @@ function TypewriterMission() {
   );
 }
 
-const floatingOrbVariants = {
-  animate: (i: number) => ({
-    y: [0, -12, 0],
-    x: [0, i % 2 === 0 ? 8 : -8, 0],
-    opacity: [0.4, 0.7, 0.4],
-    transition: { duration: 4 + i, repeat: Infinity, ease: "easeInOut" },
-  }),
-};
-
 export default function Home() {
   const [submitHovered, setSubmitHovered] = useState(false);
 
@@ -127,9 +118,16 @@ export default function Home() {
         {[0, 1, 2].map((i) => (
           <motion.div
             key={i}
-            custom={i}
-            variants={floatingOrbVariants}
-            animate="animate"
+            animate={{
+              y: [0, -12, 0],
+              x: [0, i % 2 === 0 ? 8 : -8, 0],
+              opacity: [0.4, 0.7, 0.4],
+            }}
+            transition={{
+              duration: 4 + i,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
             style={{
               position: "absolute",
               width: 300 + i * 120,
