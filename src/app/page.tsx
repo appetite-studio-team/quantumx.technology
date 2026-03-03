@@ -2,8 +2,18 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import FeaturePanels from "@/components/FeaturePanels";
+
+const floatingOrbVariants = {
+  animate: (i: number) => ({
+    y: [0, -12, 0],
+    x: [0, i % 2 === 0 ? 8 : -8, 0],
+    opacity: [0.4, 0.7, 0.4],
+    transition: { duration: 4 + i, repeat: Infinity, ease: "easeInOut" },
+  }),
+};
 
 export default function Home() {
   const [submitHovered, setSubmitHovered] = useState(false);
@@ -19,6 +29,7 @@ export default function Home() {
       {/* SECTION 1 — Hero + Newsletter                */}
       {/* ============================================ */}
       <section
+        className="bg-grid-pattern"
         style={{
           height: "100vh",
           display: "flex",
@@ -27,8 +38,38 @@ export default function Home() {
           overflow: "hidden",
         }}
       >
-        {/* Subtle purple radial glow */}
-        <div
+        {/* Floating orbs */}
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={i}
+            custom={i}
+            variants={floatingOrbVariants}
+            animate="animate"
+            style={{
+              position: "absolute",
+              width: 300 + i * 120,
+              height: 300 + i * 120,
+              borderRadius: "50%",
+              background:
+                i === 0
+                  ? "radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%)"
+                  : i === 1
+                    ? "radial-gradient(circle, rgba(58,91,255,0.08) 0%, transparent 70%)"
+                    : "radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%)",
+              filter: "blur(60px)",
+              pointerEvents: "none",
+              zIndex: 0,
+              top: `${20 + i * 25}%`,
+              left: i === 0 ? "10%" : i === 1 ? "60%" : "80%",
+            }}
+          />
+        ))}
+
+        {/* Central purple glow */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
           style={{
             position: "absolute",
             top: "35%",
@@ -37,7 +78,7 @@ export default function Home() {
             width: "800px",
             height: "600px",
             background:
-              "radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)",
             filter: "blur(80px)",
             pointerEvents: "none",
             zIndex: 0,
@@ -70,14 +111,32 @@ export default function Home() {
               textAlign: "center",
             }}
           >
+            {/* Hero icon */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+              style={{ marginBottom: "28px" }}
+            >
+              <Image
+                src="/App-Icon-Black.png"
+                alt="QuantumX"
+                width={72}
+                height={72}
+                className="font-display"
+                style={{ filter: "invert(1)" }}
+              />
+            </motion.div>
+
             {/* Headline */}
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+              transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display"
               style={{
                 fontSize: "clamp(42px, 5.5vw, 72px)",
-                fontWeight: 900,
+                fontWeight: 800,
                 color: "#FFFFFF",
                 letterSpacing: "-0.03em",
                 lineHeight: 1.05,
@@ -88,12 +147,13 @@ export default function Home() {
               Engineering the
             </motion.h1>
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+              transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display"
               style={{
                 fontSize: "clamp(42px, 5.5vw, 72px)",
-                fontWeight: 900,
+                fontWeight: 800,
                 letterSpacing: "-0.03em",
                 lineHeight: 1.05,
                 textTransform: "uppercase",
@@ -110,9 +170,9 @@ export default function Home() {
             {/* Newsletter */}
             <motion.div
               id="newsletter"
-              initial={{ opacity: 0, y: 14 }}
+              initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.36, ease: "easeOut" }}
+              transition={{ duration: 0.6, delay: 0.38, ease: [0.22, 1, 0.36, 1] }}
               style={{
                 display: "flex",
                 gap: "0px",
@@ -121,9 +181,11 @@ export default function Home() {
                 maxWidth: "480px",
               }}
             >
-              <input
+              <motion.input
                 type="email"
                 placeholder="gavin@hooli.com"
+                whileFocus={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
                 style={{
                   flex: 1,
                   padding: "14px 18px",
@@ -138,9 +200,11 @@ export default function Home() {
                   transition: "border-color 0.2s ease",
                 }}
               />
-              <button
+              <motion.button
                 onMouseEnter={() => setSubmitHovered(true)}
                 onMouseLeave={() => setSubmitHovered(false)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 style={{
                   padding: "14px 28px",
                   fontSize: "11px",
@@ -158,13 +222,13 @@ export default function Home() {
                 }}
               >
                 Get Notified →
-              </button>
+              </motion.button>
             </motion.div>
 
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.42 }}
+              transition={{ duration: 0.5, delay: 0.48 }}
               style={{
                 fontSize: "11px",
                 color: "#5A5E6B",
@@ -178,16 +242,16 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
+            transition={{ duration: 0.5, delay: 0.9 }}
             style={{
               textAlign: "center",
               paddingBottom: "28px",
             }}
           >
             <motion.div
-              animate={{ y: [0, 6, 0] }}
-              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-              style={{ color: "#5A5E6B", fontSize: "18px" }}
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              style={{ color: "#5A5E6B", fontSize: "20px", cursor: "default" }}
             >
               ↓
             </motion.div>
@@ -199,6 +263,7 @@ export default function Home() {
       {/* SECTION 2 — Mission Statement                 */}
       {/* ============================================ */}
       <section
+        className="bg-dot-pattern"
         style={{
           minHeight: "100vh",
           display: "flex",
@@ -211,7 +276,11 @@ export default function Home() {
         }}
       >
         {/* Subtle glow */}
-        <div
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1 }}
           style={{
             position: "absolute",
             top: "50%",
@@ -220,18 +289,58 @@ export default function Home() {
             width: "600px",
             height: "400px",
             background:
-              "radial-gradient(circle, rgba(139,92,246,0.04) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%)",
             filter: "blur(80px)",
             pointerEvents: "none",
             zIndex: 0,
           }}
         />
 
+        {/* Mission hero image */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            position: "relative",
+            width: "100%",
+            maxWidth: "min(720px, 85vw)",
+            marginBottom: "48px",
+            zIndex: 1,
+          }}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            whileHover={{ scale: 1.02 }}
+            style={{
+              position: "relative",
+              width: "100%",
+              aspectRatio: "16/9",
+              borderRadius: "8px",
+              overflow: "hidden",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
+            <Image
+              src="/quantumx-mission-hero.png"
+              alt="Quantum computing, post-quantum cybersecurity, and next-generation scientific systems"
+              fill
+              sizes="(max-width: 900px) 85vw, 720px"
+              style={{ objectFit: "cover" }}
+            />
+          </motion.div>
+        </motion.div>
+
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
+          transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="font-display"
           style={{
             fontSize: "clamp(24px, 3vw, 40px)",
             fontWeight: 400,
@@ -244,9 +353,33 @@ export default function Home() {
           }}
         >
           QuantumX is building open infrastructure for{" "}
-          <span style={{ color: "#FFFFFF", fontWeight: 700 }}>quantum computing</span>,{" "}
-          <span style={{ color: "#FFFFFF", fontWeight: 700 }}>post-quantum cybersecurity</span>, and{" "}
-          <span style={{ color: "#FFFFFF", fontWeight: 700 }}>next-generation scientific systems</span>.
+          <motion.span
+            initial={{ opacity: 0.8 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            style={{ color: "#FFFFFF", fontWeight: 700 }}
+          >
+            quantum computing
+          </motion.span>
+          ,{" "}
+          <motion.span
+            initial={{ opacity: 0.8 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            style={{ color: "#FFFFFF", fontWeight: 700 }}
+          >
+            post-quantum cybersecurity
+          </motion.span>
+          , and{" "}
+          <motion.span
+            initial={{ opacity: 0.8 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            style={{ color: "#FFFFFF", fontWeight: 700 }}
+          >
+            next-generation scientific systems
+          </motion.span>
+          .
         </motion.p>
       </section>
 
@@ -254,6 +387,7 @@ export default function Home() {
       {/* SECTION 3 — Research Panels + Footer          */}
       {/* ============================================ */}
       <section
+        className="bg-diagonal-lines"
         style={{
           minHeight: "100vh",
           display: "flex",
@@ -263,7 +397,11 @@ export default function Home() {
         }}
       >
         {/* Subtle blue glow */}
-        <div
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1 }}
           style={{
             position: "absolute",
             top: "40%",
@@ -272,7 +410,7 @@ export default function Home() {
             width: "700px",
             height: "500px",
             background:
-              "radial-gradient(circle, rgba(58,91,255,0.04) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(58,91,255,0.05) 0%, transparent 70%)",
             filter: "blur(80px)",
             pointerEvents: "none",
             zIndex: 0,
@@ -308,13 +446,14 @@ export default function Home() {
             {/* Section header */}
             <div style={{ textAlign: "center" }}>
               <motion.h2
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                className="font-display"
                 style={{
                   fontSize: "clamp(28px, 3.5vw, 44px)",
-                  fontWeight: 900,
+                  fontWeight: 800,
                   color: "#FFFFFF",
                   letterSpacing: "-0.02em",
                   lineHeight: 1.1,
@@ -325,10 +464,10 @@ export default function Home() {
                 Research Infrastructure
               </motion.h2>
               <motion.p
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+                transition={{ duration: 0.5, delay: 0.22 }}
                 style={{
                   fontSize: "15px",
                   fontWeight: 400,
@@ -348,7 +487,11 @@ export default function Home() {
           </div>
 
           {/* Footer */}
-          <footer
+          <motion.footer
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
             style={{
               textAlign: "center",
               paddingBottom: "28px",
@@ -368,7 +511,7 @@ export default function Home() {
               © 2026 QuantumX.Technology&nbsp;&nbsp;·&nbsp;&nbsp;Preparing the
               Quantum Transition
             </p>
-          </footer>
+          </motion.footer>
         </div>
       </section>
     </div>
