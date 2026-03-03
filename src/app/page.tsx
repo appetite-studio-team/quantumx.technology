@@ -1,9 +1,95 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion, useInView } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import FeaturePanels from "@/components/FeaturePanels";
+
+const MISSION_SEGMENTS = [
+  { text: "QuantumX is building open infrastructure for ", bold: false },
+  { text: "quantum computing", bold: true },
+  { text: ", ", bold: false },
+  { text: "post-quantum cybersecurity", bold: true },
+  { text: ", and ", bold: false },
+  { text: "next-generation scientific systems", bold: true },
+  { text: ".", bold: false },
+];
+
+function TypewriterMission() {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.3 });
+  const totalLen = MISSION_SEGMENTS.reduce((n, s) => n + s.text.length, 0);
+  const [visibleLen, setVisibleLen] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    if (visibleLen >= totalLen) return;
+    const t = setInterval(() => {
+      setVisibleLen((prev) => (prev >= totalLen ? totalLen : prev + 1));
+    }, 35);
+    return () => clearInterval(t);
+  }, [inView, visibleLen, totalLen]);
+
+  let consumed = 0;
+  const parts: { text: string; bold: boolean }[] = [];
+  for (const seg of MISSION_SEGMENTS) {
+    const start = consumed;
+    const end = consumed + seg.text.length;
+    consumed = end;
+    if (visibleLen <= start) continue;
+    const take = Math.min(visibleLen - start, seg.text.length);
+    if (take > 0) parts.push({ text: seg.text.slice(0, take), bold: seg.bold });
+  }
+  const showCursor = visibleLen < totalLen;
+
+  return (
+    <motion.p
+      ref={ref}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+      className="font-display"
+      style={{
+        fontSize: "clamp(24px, 3vw, 40px)",
+        fontWeight: 400,
+        color: "#9CA3AF",
+        lineHeight: 1.5,
+        maxWidth: "800px",
+        textAlign: "center",
+        position: "relative",
+        zIndex: 1,
+      }}
+    >
+      {parts.map((p, i) => (
+        <span
+          key={i}
+          style={
+            p.bold
+              ? { color: "#FFFFFF", fontWeight: 700 }
+              : { color: "#9CA3AF", fontWeight: 400 }
+          }
+        >
+          {p.text}
+        </span>
+      ))}
+      {showCursor && (
+        <motion.span
+          animate={{ opacity: [1, 0] }}
+          transition={{ duration: 0.6, repeat: Infinity }}
+          style={{
+            display: "inline-block",
+            width: "2px",
+            height: "0.9em",
+            backgroundColor: "#8B5CF6",
+            marginLeft: "2px",
+            verticalAlign: "text-bottom",
+          }}
+        />
+      )}
+    </motion.p>
+  );
+}
 
 const floatingOrbVariants = {
   animate: (i: number) => ({
@@ -278,52 +364,7 @@ export default function Home() {
           }}
         />
 
-        <motion.p
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="font-display"
-          style={{
-            fontSize: "clamp(24px, 3vw, 40px)",
-            fontWeight: 400,
-            color: "#9CA3AF",
-            lineHeight: 1.5,
-            maxWidth: "800px",
-            textAlign: "center",
-            position: "relative",
-            zIndex: 1,
-          }}
-        >
-          QuantumX is building open infrastructure for{" "}
-          <motion.span
-            initial={{ opacity: 0.8 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            style={{ color: "#FFFFFF", fontWeight: 700 }}
-          >
-            quantum computing
-          </motion.span>
-          ,{" "}
-          <motion.span
-            initial={{ opacity: 0.8 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            style={{ color: "#FFFFFF", fontWeight: 700 }}
-          >
-            post-quantum cybersecurity
-          </motion.span>
-          , and{" "}
-          <motion.span
-            initial={{ opacity: 0.8 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            style={{ color: "#FFFFFF", fontWeight: 700 }}
-          >
-            next-generation scientific systems
-          </motion.span>
-          .
-        </motion.p>
+        <TypewriterMission />
       </section>
 
       {/* ============================================ */}
